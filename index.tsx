@@ -1,79 +1,73 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-} from 'react-native';
 
-const CustomKeyboardScreen = () => {
-  const [phoneNumber, setPhoneNumber] = useState('');
+import React from 'react';
+import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
 
-  const handleKeyPress = (value) => {
-    if (value === 'delete') {
-      setPhoneNumber(phoneNumber.slice(0, -1)); // Xóa ký tự cuối
-    } else {
-      setPhoneNumber(phoneNumber + value); // Thêm ký tự
-    }
-  };
+const notifications = [
+  {
+    id: '1',
+    title: 'Bước 1 Xác định nhu cầu khách hàng',
+    description: 'Vũ Văn Hoàng sắp đến hạn lúc 01/08/2020 9:00',
+    date: '20/08/2020, 06:00',
+    icon: '✅', // Biểu tượng minh họa
+  },
+  {
+    id: '2',
+    title: 'Bạn có khách hàng mới!',
+    description: 'Chúc mừng bạn, bạn có khách hàng mới. Hãy mau chóng liên lạc ngay.',
+    date: '20/08/2020, 06:00',
+    icon: '👥',
+  },
+  {
+    id: '3',
+    title: 'Khách hàng được chia sẻ bị trùng',
+    description: 'Rất tiếc, khách hàng được chia sẻ đã tồn tại trên hệ thống. Vui lòng chia sẻ khách hàng.',
+    date: '20/08/2020, 06:00',
+    icon: '👥',
+  },
+  {
+    id: '4',
+    title: 'Khách hàng được thêm bị trùng',
+    description: 'Rất tiếc, khách hàng được thêm đã tồn tại trên hệ thống. Vui lòng thêm khách hàng.',
+    date: '20/08/2020, 06:00',
+    icon: '👥',
+  },
+  {
+    id: '5',
+    title: 'Công việc sắp đến hạn trong hôm nay',
+    description: 'Bạn có 17 công việc sắp đến hạn trong hôm nay.',
+    date: '20/08/2020, 06:00',
+    icon: '✅',
+  },
+  {
+    id: '6',
+    title: 'Công việc đã quá hạn',
+    description: 'Bạn có 17 công việc bị quá hạn. Hãy kiểm tra và lên kế hoạch hoàn thành công việc.',
+    date: '20/08/2020, 06:00',
+    icon: '✅',
+  },
+];
 
-  const handleContinue = () => {
-    console.log('Số điện thoại:', phoneNumber); // In ra terminal
-  };
+const NotificationScreen = () => {
+  const renderItem = ({ item }) => (
+    <View style={styles.notificationItem}>
+      <Text style={styles.icon}>{item.icon}</Text>
+      <View style={styles.notificationContent}>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.description}>{item.description}</Text>
+        <Text style={styles.date}>{item.date}</Text>
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      {/* Tiêu đề và ô nhập số */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Đăng nhập</Text>
-        <Text style={styles.label}>Nhập số điện thoại</Text>
-        <Text style={styles.description}>
-          Dùng số điện thoại để đăng nhập hoặc đăng ký tài khoản tại OneHousing Pro
-        </Text>
-        <TextInput
-          style={styles.input}
-          value={phoneNumber}
-          editable={false} // Không cho phép nhập trực tiếp
-          placeholder="Nhập số điện thoại của bạn"
-        />
-      </View>
-
-      {/* Bàn phím số */}
-      <View style={styles.keyboard}>
-        {[
-          ['1', '2', '3'],
-          ['4', '5', '6'],
-          ['7', '8', '9'],
-          ['*', '0', 'delete'],
-        ].map((row, rowIndex) => (
-          <View key={rowIndex} style={styles.row}>
-            {row.map((key) => (
-              <TouchableOpacity
-                key={key}
-                style={styles.key}
-                onPress={() => handleKeyPress(key === 'delete' ? 'delete' : key)}
-              >
-                <Text style={styles.keyText}>
-                  {key === 'delete' ? '⌫' : key}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        ))}
-      </View>
-
-      {/* Nút tiếp tục */}
-      <TouchableOpacity
-        style={[
-          styles.button,
-          { backgroundColor: phoneNumber ? '#007AFF' : '#D1D1D6' },
-        ]}
-        onPress={handleContinue}
-        disabled={!phoneNumber}
-      >
-        <Text style={styles.buttonText}>Tiếp tục</Text>
-      </TouchableOpacity>
+      <Text style={styles.header}>Thông báo</Text>
+      <FlatList
+        data={notifications}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+      />
     </View>
   );
 };
@@ -81,74 +75,47 @@ const CustomKeyboardScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 20,
-    justifyContent: 'space-between',
+    backgroundColor: '#fff',
   },
   header: {
-    marginTop: 50,
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    padding: 16,
+    backgroundColor: '#f5f5f5',
+  },
+  list: {
+    paddingHorizontal: 16,
+  },
+  notificationItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  icon: {
+    fontSize: 24,
+    marginRight: 12,
+    color: '#007bff',
+  },
+  notificationContent: {
+    flex: 1,
   },
   title: {
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#000',
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#000',
-    marginBottom: 10,
+    marginBottom: 4,
   },
   description: {
     fontSize: 14,
-    color: '#6D6D6D',
-    marginBottom: 20,
+    color: '#555',
+    marginBottom: 8,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    height: 50,
-    fontSize: 16,
-    backgroundColor: '#F9F9F9',
-    color: '#000',
-  },
-  keyboard: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
-  },
-  key: {
-    width: 70,
-    height: 70,
-    backgroundColor: '#F9F9F9',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 35,
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-  },
-  keyText: {
-    fontSize: 24,
-    color: '#000',
-  },
-  button: {
-    height: 50,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+  date: {
+    fontSize: 12,
+    color: '#888',
   },
 });
 
-export default CustomKeyboardScreen;
+export default NotificationScreen;
